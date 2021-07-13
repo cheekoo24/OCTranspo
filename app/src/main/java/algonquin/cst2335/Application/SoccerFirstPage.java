@@ -1,4 +1,4 @@
-package algonquin.cst2335.desi0068;
+package algonquin.cst2335.Application;
 
 import androidx.appcompat.app.AppCompatActivity;
 

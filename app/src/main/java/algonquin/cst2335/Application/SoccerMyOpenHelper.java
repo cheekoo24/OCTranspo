@@ -1,11 +1,9 @@
-package algonquin.cst2335.desi0068;
+package algonquin.cst2335.Application;
 
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
 
 public class SoccerMyOpenHelper extends SQLiteOpenHelper {
 
