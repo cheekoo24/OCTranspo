@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Final Android Project</string>
-
+    <string name="app_name">OC Transpo Bus Route</string>
+    <string name="search">Cherchez ici</string>
+    <string name="route">Routes</string>
+    <string name="info">Info</string>
+    <string name="searchHere">Nom ou numéro de l\'itinéraire</string>
 
 
 </resources>
