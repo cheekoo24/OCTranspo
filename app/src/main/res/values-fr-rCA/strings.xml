@@ -5,6 +5,15 @@
     <string name="route">Routes</string>
     <string name="info">Info</string>
     <string name="searchHere">Nom ou numéro de l\'itinéraire</string>
+    <string name="settings">Paramètres</string>
+    <string name="contacts">Contactez-nous</string>
+    <string name="fares">Tarifs</string>
+    <string name="feedback">Retour d\'information</string>
+    <string name="help">Aide ici</string>
+    <string name="instruction">Instruction</string>
+    <string name="enterbus">Entrez le numéro de bus</string>
+    <string name="favourites">Favourites</string>
+    <string name="about">About</string>
 
 
 </resources>

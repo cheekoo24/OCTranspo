@@ -5,20 +5,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainOCTranspo extends AppCompatActivity {
+public class OCTranspoMainClass extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.ocmain_layout);
 
         Context context = getApplicationContext();
 
@@ -41,12 +40,23 @@ public class MainOCTranspo extends AppCompatActivity {
         });
 
 
-        ImageButton route = findViewById(R.id.infoButton);
+        //Info Button
+        ImageView route = findViewById(R.id.infoButton);
         route.setOnClickListener(clck -> {
-            Intent nextPage = new Intent(MainOCTranspo.this, InfoClass.class);
+            Intent nextPage = new Intent(OCTranspoMainClass.this, OCInfoClass.class);
             startActivity(nextPage);
 
             Toast toast = Toast.makeText(context, "Info...", Toast.LENGTH_SHORT);
+            toast.show();
+        });
+
+        //Favourites Button
+        ImageView favourite = findViewById(R.id.mainFavourite);
+        favourite.setOnClickListener( clck -> {
+            Intent nextPage = new Intent(OCTranspoMainClass.this, OCFavouriteClass.class);
+            startActivity(nextPage);
+
+            Toast toast = Toast.makeText(context, "Favourites...", Toast.LENGTH_SHORT);
             toast.show();
         });
     }

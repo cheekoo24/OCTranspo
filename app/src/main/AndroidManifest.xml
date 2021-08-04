@@ -8,8 +8,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProjectAndroid">
-        <activity android:name=".InfoClass"/>
-        <activity android:name=".MainOCTranspo">
+        <activity android:name=".OCFavouriteClass" android:label="Favourites"/>
+        <activity android:name=".OCSettingsClass" android:label="Settings"/>
+        <activity android:name=".OCContactClass" android:label="Contacts"/>
+        <activity android:name=".OCInfoClass" android:label="Information"/>
+        <activity android:name=".OCFareClass" android:label="Payment Per Ride"/>
+        <activity android:name=".OCFeedbackClass" android:label="Feedback"/>
+        <activity android:name=".OCTranspoMainClass" android:label="Enter the Bus number">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
