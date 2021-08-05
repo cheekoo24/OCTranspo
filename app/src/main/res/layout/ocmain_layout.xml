@@ -8,18 +8,6 @@
     android:background="@drawable/infocustombackground"
     >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView3"
-        android:layout_width="411dp"
-        android:layout_height="520dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextSearch"
-        tools:ignore="MissingConstraints" />
-
-
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="0dp"
@@ -30,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
@@ -93,5 +82,150 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/info_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/busNumInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="20dp"
+        android:text="Bus Information for:"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSearch" />
+
+    <TextView
+        android:id="@+id/getBusNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="BusNum"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/busNumInfo"
+        app:layout_constraintStart_toEndOf="@+id/busNumInfo" />
+
+    <TextView
+        android:id="@+id/TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Trip Destination:"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/busNumInfo"
+        app:layout_constraintTop_toBottomOf="@+id/busNumInfo" />
+
+    <TextView
+        android:id="@+id/tripDest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trip Dest"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/TextView"
+        app:layout_constraintStart_toStartOf="@+id/getBusNum" />
+
+    <TextView
+        android:id="@+id/textView37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Latitude:"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/TextView"
+        app:layout_constraintTop_toBottomOf="@+id/TextView" />
+
+    <TextView
+        android:id="@+id/textView38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Longitude:"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/textView37"
+        app:layout_constraintTop_toBottomOf="@+id/textView37" />
+
+    <TextView
+        android:id="@+id/textView39"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="GPS Speed:"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/textView38"
+        app:layout_constraintTop_toBottomOf="@+id/textView38" />
+
+    <TextView
+        android:id="@+id/textView40"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Start Time:"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/textView39"
+        app:layout_constraintTop_toBottomOf="@+id/textView39" />
+
+    <TextView
+        android:id="@+id/textView41"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Adjusted Time:"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/textView40"
+        app:layout_constraintTop_toBottomOf="@+id/textView40" />
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="latitude"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView37"
+        app:layout_constraintStart_toStartOf="@+id/tripDest" />
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="longitude"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView38"
+        app:layout_constraintStart_toStartOf="@+id/latitude" />
+
+    <TextView
+        android:id="@+id/gps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="gps"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView39"
+        app:layout_constraintStart_toStartOf="@+id/longitude" />
+
+    <TextView
+        android:id="@+id/startTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="startTime"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView40"
+        app:layout_constraintStart_toStartOf="@+id/gps" />
+
+    <TextView
+        android:id="@+id/adjustedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="adjustedTime"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView41"
+        app:layout_constraintStart_toStartOf="@+id/startTime" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
