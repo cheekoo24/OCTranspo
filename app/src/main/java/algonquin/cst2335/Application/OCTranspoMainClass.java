@@ -66,62 +66,61 @@ public class OCTranspoMainClass extends AppCompatActivity {
                 edit.putString("SearchedItem", search.getText().toString());
                 edit.apply();
 
-
-
-                Executor newThread = Executors.newSingleThreadExecutor();
-                int busEntered = Integer.parseInt(search.getText().toString());
-                newThread.execute(() -> {
-                try {
-                    stringURL = "https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo="
-                            + busEntered;
-
-                    //Connecting to Server
-                    URL url = new URL(stringURL);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                    //Convert InputStream into String
-                    String text = (new BufferedReader(
-                            new InputStreamReader(in, StandardCharsets.UTF_8)))
-                            .lines()
-                            .collect(Collectors.joining("\n"));
-
-                    //Convet String text to JSONObject
-                    JSONObject theDocument = new JSONObject(text);
-                    JSONObject routeSummary = theDocument.getJSONObject("GetRouteSummaryForStopResult");
-                    JSONObject routes = routeSummary.getJSONObject("Routes");
-                    JSONArray routeArray = routes.getJSONArray("Route");
-                    for (int i = 0; i < routeArray.length(); i++) {
-                        JSONObject object = routeArray.getJSONObject(i);
-                        data = new BusInfo(object.getString("RouteNo"),object.getString("RouteHeading") );
-                        arrayList.add("Route: " + data.getRouteNo() + "          Heading to: " + data.getRouteHeading());
-                        routeNo.add(data.getRouteNo()); // getting the value of the route number for later task
-                    }
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-
-                });
-
-                //Initialize Array Adapter
-                arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,arrayList);
-
-                //Set Array Adapater to RecyclerView
-                listView.setAdapter(arrayAdapter);
-
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        Toast.makeText(getApplicationContext()
-                        , arrayList.get(position), Toast.LENGTH_SHORT).show();
-                        //routeNo.get(position) //to get the Route number
-                    }
-                });
                 InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
                 return true;
             }
             return false;
+        });
+
+        //Connecting to Web API and getting the information using JSON
+        Executor newThread = Executors.newSingleThreadExecutor();
+        int busEntered = Integer.parseInt(search.getText().toString());
+        newThread.execute(() -> {
+            try {
+                stringURL = "https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo="
+                        + busEntered;
+
+                //Connecting to Server
+                URL url = new URL(stringURL);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+                //Convert InputStream into String
+                String text = (new BufferedReader(
+                        new InputStreamReader(in, StandardCharsets.UTF_8)))
+                        .lines()
+                        .collect(Collectors.joining("\n"));
+
+                //Convet String text to JSONObject
+                JSONObject theDocument = new JSONObject(text);
+                JSONObject routeSummary = theDocument.getJSONObject("GetRouteSummaryForStopResult");
+                JSONObject routes = routeSummary.getJSONObject("Routes");
+                JSONArray routeArray = routes.getJSONArray("Route");
+                for (int i = 0; i < routeArray.length(); i++) {
+                    JSONObject object = routeArray.getJSONObject(i);
+                    data = new BusInfo(object.getString("RouteNo"),object.getString("RouteHeading") );
+                    arrayList.add("Route: " + data.getRouteNo() + "            " + data.getRouteHeading());
+                    routeNo.add(data.getRouteNo()); // getting the value of the route number for later task
+                }
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+
+        });
+
+        //Initialize Array Adapter
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,arrayList);
+
+        //Set Array Adapater to RecyclerView
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(getApplicationContext()
+                        , arrayList.get(position), Toast.LENGTH_SHORT).show();
+                //routeNo.get(position) //to get the Route number
+            }
         });
 
 
