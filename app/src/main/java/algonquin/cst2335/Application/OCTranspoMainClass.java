@@ -1,5 +1,6 @@
 package algonquin.cst2335.Application;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +41,6 @@ import java.util.stream.Collectors;
 public class OCTranspoMainClass extends AppCompatActivity {
 
     private String stringURL;
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +52,6 @@ public class OCTranspoMainClass extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String searchedItem = prefs.getString("SearchedItem", "");
 
-        EditText search = findViewById(R.id.editTextSearch);
-        TextView busInfo = findViewById(R.id.busNumInfo);
-        TextView busNum = findViewById(R.id.getBusNum);
 
         EditText editSearch = findViewById(R.id.editTextSearch);
         editSearch.setText(searchedItem);
@@ -61,25 +59,33 @@ public class OCTranspoMainClass extends AppCompatActivity {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 SharedPreferences.Editor edit = prefs.edit();
-                edit.putString("SearchedItem", search.getText().toString());
+                edit.putString("SearchedItem", editSearch.getText().toString());
                 edit.apply();
 
-                //close keyboard when hit enter
-                InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                AlertDialog dialog = new AlertDialog.Builder(OCTranspoMainClass.this)
+                        .setTitle("Attention!")
+                        .setMessage("\n\nPlease wait while trying to get the info")
+                        .setView(new ProgressBar(OCTranspoMainClass.this))
+                        .show();
 
+                setContentView(R.layout.ocbusinfo_layout);
 
+                TextView busInfo = findViewById(R.id.busNumInfo);
+                TextView busNum = findViewById(R.id.getBusNum);
                 //Show Visibiltiy for Bus Info
+
+
                 busInfo.setVisibility(View.VISIBLE);
                 busNum.setVisibility(View.VISIBLE);
                 busNum.setText(editSearch.getText());
 
 
-                //Connect To Web and Get the Information
+                //Connect To Web and Get the Information for GetRouteSummaryForStop
                 Executor newThread = Executors.newSingleThreadExecutor();
 
-                int busEntered = Integer.parseInt(search.getText().toString());
+                int busEntered = Integer.parseInt(editSearch.getText().toString());
                 newThread.execute(() -> {
+
                     try {
                         stringURL = "https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo="
                                 + busEntered;
@@ -95,19 +101,70 @@ public class OCTranspoMainClass extends AppCompatActivity {
                                 .lines()
                                 .collect(Collectors.joining("\n"));
 
-                        //Convet String text o JSONObject
+                        //Convet String text to JSONObject
                         JSONObject theDocument = new JSONObject(text);
                         JSONObject routeSummary = theDocument.getJSONObject("GetRouteSummaryForStopResult");
-                        JSONObject desc = routeSummary.getJSONObject("Routes");
-                        JSONArray routeArray = desc.getJSONArray("Route");
-                        JSONObject route = routeArray.getJSONObject(0);
-                        String routeNo = route.getString("RouteNo"); //RouteNo value.
+                        JSONObject routes = routeSummary.getJSONObject("Routes");
+                        JSONArray routeArray = routes.getJSONArray("Route");
+                        JSONObject routeIndex = routeArray.getJSONObject(0);
+                        String routeNo = routeIndex.getString("RouteNo"); //RouteNo value.
 
+
+                        //Connecting to Server
+                        URL urlNext = new URL("https://api.octranspo1.com/v2.0/GetNextTripsForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo="
+                                + busEntered + "&RouteNo=" + routeNo);
+                        HttpURLConnection urlConnectionNext = (HttpURLConnection) urlNext.openConnection();
+                        InputStream inNext = new BufferedInputStream(urlConnectionNext.getInputStream());
+
+                        //Convert in2 into String
+                        String textNext = (new BufferedReader(
+                                new InputStreamReader(inNext, StandardCharsets.UTF_8)))
+                                .lines()
+                                .collect(Collectors.joining("\n"));
+
+                        //Convert text2 String into JSONObject
+                        JSONObject theDocument2 = new JSONObject(textNext);
+                        JSONObject nextTrip = theDocument2.getJSONObject("GetNextTripsForStopResult");
+                        JSONObject routeNext = nextTrip.getJSONObject("Route");
+                        JSONArray routeDirArray = routeNext.getJSONArray("RouteDirection");
+                        JSONObject indexDir = routeDirArray.getJSONObject(0);
+                        JSONObject trips = indexDir.getJSONObject("Trips");
+                        JSONArray tripArray = trips.getJSONArray("Trip");
+                        JSONObject indexTrip = tripArray.getJSONObject(0);
+                        String tripDis = indexTrip.getString("TripDestination");
+                        String latitude = indexTrip.getString("Latitude");
+                        String longitude = indexTrip.getString("Longitude");
+                        String gps = indexTrip.getString("GPSSpeed");
+                        String startTime = indexTrip.getString("TripStartTime");
+                        String adjustTime = indexTrip.getString("AdjustedScheduleTime");
+
+                        TextView tripDest = findViewById(R.id.tripDest);
+                        TextView lat = findViewById(R.id.latitude);
+                        TextView longi = findViewById(R.id.longitude);
+                        TextView gpsSpeed = findViewById(R.id.gps);
+                        TextView startT = findViewById(R.id.startTime);
+                        TextView adjustT = findViewById(R.id.adjustedTime);
 
                         runOnUiThread(() -> {
+
+                            tripDest.setText(tripDis);
+                            tripDest.setVisibility(View.VISIBLE);
+
+                            lat.setText(latitude);
+                            lat.setVisibility(View.VISIBLE);
+
+                            longi.setText(longitude);
+                            longi.setVisibility(View.VISIBLE);
+
+                            gpsSpeed.setText(gps);
+                            gpsSpeed.setVisibility(View.VISIBLE);
+
+                            startT.setText(startTime);
+                            startT.setVisibility(View.VISIBLE);
+
+                            adjustT.setText(adjustTime);
+                            adjustT.setVisibility(View.VISIBLE);
                         });
-
-
 
                     } catch (IOException | JSONException e) {
                         e.printStackTrace();
