@@ -9,7 +9,7 @@
     >
 
     <EditText
-        android:id="@+id/editTextSearch"
+        android:id="@+id/search"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
@@ -83,13 +83,14 @@
             app:srcCompat="@drawable/info_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="409dp"
-        android:layout_height="581dp"
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="408dp"
+        android:layout_height="451dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextSearch" />
+        app:layout_constraintTop_toBottomOf="@+id/search" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
