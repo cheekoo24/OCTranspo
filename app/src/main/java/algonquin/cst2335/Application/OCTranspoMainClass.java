@@ -40,6 +40,7 @@ public class OCTranspoMainClass extends AppCompatActivity {
     private String stringURL;
     ListView listView;
     ArrayList<String> arrayList = new ArrayList<>();
+    ArrayList<String> routeNo = new ArrayList<>();
     ArrayAdapter<String> arrayAdapter;
     BusInfo data;
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -94,6 +95,7 @@ public class OCTranspoMainClass extends AppCompatActivity {
                         JSONObject object = routeArray.getJSONObject(i);
                         data = new BusInfo(object.getString("RouteNo"),object.getString("RouteHeading") );
                         arrayList.add("Route: " + data.getRouteNo() + "          Heading to: " + data.getRouteHeading());
+                        routeNo.add(data.getRouteNo()); // getting the value of the route number for later task
                     }
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -111,7 +113,8 @@ public class OCTranspoMainClass extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                         Toast.makeText(getApplicationContext()
-                        ,arrayList.get(position), Toast.LENGTH_SHORT).show();
+                        , arrayList.get(position), Toast.LENGTH_SHORT).show();
+                        //routeNo.get(position) //to get the Route number
                     }
                 });
                 InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
