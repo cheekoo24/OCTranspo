@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+public class OCRecyclerAdapter extends RecyclerView.Adapter<OCRecyclerAdapter.MyViewHolder> {
     private ArrayList<OCBusData> busDataList;
     private RecyclerViewClickListener listener;
 
-    public RecyclerAdapter(ArrayList<OCBusData> busDataList, RecyclerViewClickListener listener) {
+    public OCRecyclerAdapter(ArrayList<OCBusData> busDataList, RecyclerViewClickListener listener) {
         this.busDataList = busDataList;
         this.listener = listener;
     }
@@ -36,13 +36,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     @Override
-    public RecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OCRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.ocitemlist_layout, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(OCRecyclerAdapter.MyViewHolder holder, int position) {
         String routeNo = busDataList.get(position).getRouteNum();
         String routeName = busDataList.get(position).getRouteName();
         holder.numRoute.setText(routeNo);

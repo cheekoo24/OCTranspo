@@ -5,25 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,11 +38,15 @@ import java.util.stream.Collectors;
 public class OCTranspoMainClass extends AppCompatActivity {
     private ArrayList<OCBusData> busList;
     private RecyclerView recyclerView;
-    private RecyclerAdapter.RecyclerViewClickListener listener;
+    private OCRecyclerAdapter.RecyclerViewClickListener listener;
     private String stringURL;
     private EditText search;
-    private String input;
+    private static String input;
     private String description;
+
+    public String getInput() {
+        return input;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -110,14 +105,14 @@ public class OCTranspoMainClass extends AppCompatActivity {
 
     private void setAdapter() {
         setOnClickListener();
-        RecyclerAdapter adapter = new RecyclerAdapter(busList, listener);
+        OCRecyclerAdapter adapter = new OCRecyclerAdapter(busList, listener);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     private void setOnClickListener() {
-        listener = new RecyclerAdapter.RecyclerViewClickListener() {
+        listener = new OCRecyclerAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View v, int position) {
                 Intent intent = new Intent(getApplicationContext(), OCBusInfoClass.class);
@@ -128,6 +123,9 @@ public class OCTranspoMainClass extends AppCompatActivity {
         };
     }
 
+    /**
+     * This function is used to add data that will be posted on the recyclerview
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setBusData() {
             try {
@@ -152,6 +150,11 @@ public class OCTranspoMainClass extends AppCompatActivity {
         }*/
     }
 
+    /**
+     * This function is used to connect to the webserver
+     * @param stringUrl
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public String connectTo(String stringUrl) {
         InputStream in = null;

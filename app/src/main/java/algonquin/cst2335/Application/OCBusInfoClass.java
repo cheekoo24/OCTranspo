@@ -40,7 +40,6 @@ public class OCBusInfoClass extends OCTranspoMainClass {
         TextView gps = findViewById(R.id.gps);
         TextView start = findViewById(R.id.startTime);
         TextView adjust = findViewById(R.id.adjustedTime);
-        OCTranspoMainClass obj = new OCTranspoMainClass();
 
         String routeNo = "";
         String routeName = "";
@@ -51,12 +50,15 @@ public class OCBusInfoClass extends OCTranspoMainClass {
             routeName = extras.getString("routeName");
         }
 
-        String url = "https://api.octranspo1.com/v2.0/GetNextTripsForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo=3050&RouteNo=" + routeNo;
+        //incomplete need for stopno
+        String url = "https://api.octranspo1.com/v2.0/GetNextTripsForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo=" + Integer.parseInt(getInput()) + "&RouteNo=" + routeNo;
 
         routeNumer.setText(routeNo);
         label.setText(routeName);
 
         Executor newThread = Executors.newSingleThreadScheduledExecutor();
+        String finalRouteName = routeName;
+        String finalRouteNo = routeNo;
         newThread.execute( () -> {
             try {
                 URL urls = new URL(url);
@@ -73,7 +75,14 @@ public class OCBusInfoClass extends OCTranspoMainClass {
                 JSONObject nextTrip = theDocument2.getJSONObject("GetNextTripsForStopResult");
                 JSONObject routeNext = nextTrip.getJSONObject("Route");
                 JSONArray routeDirArray = routeNext.getJSONArray("RouteDirection");
-                JSONObject indexDir = routeDirArray.getJSONObject(0);
+                int index = 0;
+                for (int i = 0; i < routeDirArray.length(); i++) {
+                    if (finalRouteName.contains(routeDirArray.getJSONObject(i).getString("RouteLabel"))
+                            && finalRouteNo.contains(routeDirArray.getJSONObject(i).getString("RouteNo"))){
+                        index = i;
+                    }
+                }
+                JSONObject indexDir = routeDirArray.getJSONObject(index);
                 JSONObject trips = indexDir.getJSONObject("Trips");
                 JSONArray tripArray = trips.getJSONArray("Trip");
                 JSONObject indexTrip = tripArray.getJSONObject(0);
