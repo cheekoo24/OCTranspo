@@ -6,17 +6,26 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,91 +45,45 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class OCTranspoMainClass extends AppCompatActivity {
-
+    private ArrayList<OCBusData> busList;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter.RecyclerViewClickListener listener;
     private String stringURL;
-    ListView listView;
-    ArrayList<String> arrayList = new ArrayList<>();
-    ArrayList<String> routeNo = new ArrayList<>();
-    ArrayAdapter<String> arrayAdapter;
-    BusInfo data;
+    private EditText search;
+    private String input;
+    private String description;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ocmain_layout);
-
+        TextView desc = findViewById(R.id.description);
         Context context = getApplicationContext();
+        recyclerView = findViewById(R.id.recyclerView);
+        busList = new ArrayList<>();
+        search = findViewById(R.id.searchEdit);
+        Button enter = findViewById(R.id.enter);
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        String searchedItem = prefs.getString("SearchedItem", "");
+        String pref = prefs.getString("newItem", "");
+        search.setText(pref);
 
+        enter.setOnClickListener(clck -> {
+            EditText et = findViewById(R.id.searchEdit);
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putString("newItem", et.getText().toString());
+            edit.apply();
 
-        listView = findViewById(R.id.listView);
-        EditText search = findViewById(R.id.search);
-
-
-        search.setText(searchedItem);
-        search.setOnKeyListener((v, keyCode, event) -> {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                SharedPreferences.Editor edit = prefs.edit();
-                edit.putString("SearchedItem", search.getText().toString());
-                edit.apply();
-
-                InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                return true;
-            }
-            return false;
-        });
-
-        //Connecting to Web API and getting the information using JSON
-        Executor newThread = Executors.newSingleThreadExecutor();
-        int busEntered = Integer.parseInt(search.getText().toString());
-        newThread.execute(() -> {
-            try {
-                stringURL = "https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo="
-                        + busEntered;
-
-                //Connecting to Server
-                URL url = new URL(stringURL);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                //Convert InputStream into String
-                String text = (new BufferedReader(
-                        new InputStreamReader(in, StandardCharsets.UTF_8)))
-                        .lines()
-                        .collect(Collectors.joining("\n"));
-
-                //Convet String text to JSONObject
-                JSONObject theDocument = new JSONObject(text);
-                JSONObject routeSummary = theDocument.getJSONObject("GetRouteSummaryForStopResult");
-                JSONObject routes = routeSummary.getJSONObject("Routes");
-                JSONArray routeArray = routes.getJSONArray("Route");
-                for (int i = 0; i < routeArray.length(); i++) {
-                    JSONObject object = routeArray.getJSONObject(i);
-                    data = new BusInfo(object.getString("RouteNo"),object.getString("RouteHeading") );
-                    arrayList.add("Route: " + data.getRouteNo() + "            " + data.getRouteHeading());
-                    routeNo.add(data.getRouteNo()); // getting the value of the route number for later task
-                }
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-
-        });
-
-        //Initialize Array Adapter
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,arrayList);
-
-        //Set Array Adapater to RecyclerView
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(getApplicationContext()
-                        , arrayList.get(position), Toast.LENGTH_SHORT).show();
-                //routeNo.get(position) //to get the Route number
-            }
+            input = search.getText().toString();
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+            Executor newThread = Executors.newSingleThreadExecutor();
+            newThread.execute(() -> {
+                        setBusData();
+                    });
+            setAdapter();
+            desc.setText(description);
+            desc.setVisibility(View.VISIBLE);
         });
 
 
@@ -145,21 +108,67 @@ public class OCTranspoMainClass extends AppCompatActivity {
         });
     }
 
-    private class BusInfo {
-        public String routeNo;
-        public String routeHeading;
+    private void setAdapter() {
+        setOnClickListener();
+        RecyclerAdapter adapter = new RecyclerAdapter(busList, listener);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+    }
 
-        public BusInfo(String routeNo, String routeHeading) {
-            this.routeNo = routeNo;
-            this.routeHeading = routeHeading;
+    private void setOnClickListener() {
+        listener = new RecyclerAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                Intent intent = new Intent(getApplicationContext(), OCBusInfoClass.class);
+                intent.putExtra("routeNum", busList.get(position).getRouteNum());
+                intent.putExtra("routeName", busList.get(position).getRouteName());
+                startActivity(intent);
+            }
+        };
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void setBusData() {
+            try {
+                stringURL = "https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID=223eb5c3&&apiKey=ab27db5b435b8c8819ffb8095328e775&stopNo="
+            + input;
+                //Convet String text to JSONObject
+                JSONObject theDocument = new JSONObject(connectTo(stringURL));
+                JSONObject routeSummary = theDocument.getJSONObject("GetRouteSummaryForStopResult");
+                description = routeSummary.getString("StopDescription");
+                JSONObject routes = routeSummary.getJSONObject("Routes");
+                JSONArray routeArray = routes.getJSONArray("Route");
+                for (int i = 0; i < routeArray.length(); i++) {
+                    JSONObject object = routeArray.getJSONObject(i);
+                    busList.add(new OCBusData(object.getString("RouteNo"), object.getString("RouteHeading")));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+       /* for (int i = 0; i < 10; i++) {
+            busList.add(new OCBusData("Hi", "Hello"));
+        }*/
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public String connectTo(String stringUrl) {
+        InputStream in = null;
+        try {
+
+            //Connecting to Server
+            URL url = new URL(stringUrl);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+             in = new BufferedInputStream(urlConnection.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        public String getRouteNo() {
-            return routeNo;
-        }
-
-        public String getRouteHeading() {
-            return routeHeading;
-        }
+        //Convert InputStream into String
+        return (new BufferedReader(
+                new InputStreamReader(in, StandardCharsets.UTF_8)))
+                .lines()
+                .collect(Collectors.joining("\n"));
     }
 }
