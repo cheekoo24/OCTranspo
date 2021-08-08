@@ -103,6 +103,11 @@ public class OCTranspoMainClass extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function is used to set an adapter to display items on recycler views
+     * @author Herman Redona
+     * @version 1.0
+     */
     private void setAdapter() {
         setOnClickListener();
         OCRecyclerAdapter adapter = new OCRecyclerAdapter(busList, listener);
@@ -125,6 +130,8 @@ public class OCTranspoMainClass extends AppCompatActivity {
 
     /**
      * This function is used to add data that will be posted on the recyclerview
+     * @author Herman Redona
+     * @version 1.0
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setBusData() {
@@ -151,9 +158,9 @@ public class OCTranspoMainClass extends AppCompatActivity {
     }
 
     /**
-     * This function is used to connect to the webserver
-     * @param stringUrl
-     * @return
+     * This function is used to connect to the web server
+     * @author Herman Redona
+     * @version 1.0
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public String connectTo(String stringUrl) {
