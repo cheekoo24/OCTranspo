@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +45,7 @@ public class OCTranspoMainClass extends AppCompatActivity {
     private EditText search;
     private static String input;
     private String description;
+
 
     public String getInput() {
         return input;
@@ -75,6 +78,15 @@ public class OCTranspoMainClass extends AppCompatActivity {
             Executor newThread = Executors.newSingleThreadExecutor();
             newThread.execute(() -> {
                         setBusData();
+                View parentLayout = findViewById(android.R.id.content);
+                Snackbar.make(parentLayout, "Bus Stops Information", Snackbar.LENGTH_LONG)
+                        .setAction("CLOSE", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                            }
+                        })
+                        .setActionTextColor(getResources().getColor(android.R.color.darker_gray ))
+                        .show();
                     });
             setAdapter();
             desc.setText(description);

@@ -116,9 +116,7 @@ public class OCBusInfoClass extends OCTranspoMainClass {
 
         Button exit = findViewById(R.id.exitButton);
         exit.setOnClickListener( clck -> {
-
-            Intent nextPage = new Intent(OCBusInfoClass.this, OCTranspoMainClass.class);
-            startActivity(nextPage);
+            finish();
         });
     }
 }
