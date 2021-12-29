@@ -78,6 +78,9 @@ public class OCTranspoMainClass extends AppCompatActivity {
             Executor newThread = Executors.newSingleThreadExecutor();
             newThread.execute(() -> {
                         setBusData();
+                        runOnUiThread(() -> {
+                            setAdapter();
+                        });
                 View parentLayout = findViewById(android.R.id.content);
                 Snackbar.make(parentLayout, "Bus Stops Information", Snackbar.LENGTH_LONG)
                         .setAction("CLOSE", new View.OnClickListener() {
@@ -88,7 +91,6 @@ public class OCTranspoMainClass extends AppCompatActivity {
                         .setActionTextColor(getResources().getColor(android.R.color.darker_gray ))
                         .show();
                     });
-            setAdapter();
             desc.setText(description);
             desc.setVisibility(View.VISIBLE);
         });
