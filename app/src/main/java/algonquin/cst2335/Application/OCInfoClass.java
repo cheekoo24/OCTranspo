@@ -123,18 +123,6 @@ public class OCInfoClass extends AppCompatActivity {
             startActivity(nextPage);
         });
 
-        //Settings Button/Text
-        ImageView setting = findViewById(R.id.settingimage);
-        setting.setOnClickListener(clck -> {
-            Intent nextPage = new Intent(OCInfoClass.this, OCSettingsClass.class);
-            startActivity(nextPage);
-        });
-        TextView settingText = findViewById(R.id.settingtext);
-        settingText.setOnClickListener(clck -> {
-            Intent nextPage = new Intent(OCInfoClass.this, OCSettingsClass.class);
-            startActivity(nextPage);
-        });
-
         //About Button/Text
         String aboutString = "This app is built by <i>Herman Redona</i> for his Final Project in Android Studio Class (CST2335 Mobile Graphical Interface Programming)" +
                 " in Algonquin College Ottawa Campus";

@@ -67,6 +67,7 @@ public class OCTranspoMainClass extends AppCompatActivity {
         search.setText(pref);
 
         enter.setOnClickListener(clck -> {
+            busList.clear();
             EditText et = findViewById(R.id.searchEdit);
             SharedPreferences.Editor edit = prefs.edit();
             edit.putString("newItem", et.getText().toString());

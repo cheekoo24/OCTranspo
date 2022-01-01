@@ -11,12 +11,11 @@
         android:theme="@style/Theme.FinalProjectAndroid">
         <activity android:name=".OCBusInfoClass" android:label="Bus Information"></activity>
         <activity android:name=".OCFavouriteClass" android:label="Favourites"/>
-        <activity android:name=".OCSettingsClass" android:label="Settings"/>
         <activity android:name=".OCContactClass" android:label="Contacts"/>
         <activity android:name=".OCInfoClass" android:label="Information"/>
         <activity android:name=".OCFareClass" android:label="Payment Per Ride"/>
         <activity android:name=".OCFeedbackClass" android:label="Feedback"/>
-        <activity android:name=".OCTranspoMainClass" android:label="Routes">
+        <activity android:name=".OCTranspoMainClass" android:label="OC Transpo Routes">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

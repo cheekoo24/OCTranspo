@@ -118,5 +118,10 @@ public class OCBusInfoClass extends OCTranspoMainClass {
         exit.setOnClickListener( clck -> {
             finish();
         });
+
+        Button save = findViewById(R.id.saveButton);
+        save.setOnClickListener( clck -> {
+
+        });
     }
 }
